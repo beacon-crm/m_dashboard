@@ -1,57 +1,98 @@
+Mini Dashboard with Falling Leaves Animation
+Preview
+Code
+
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mini_dashboard_image</title>
-  <style>
-    body,
-    html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Dashboard with Falling Leaves</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .image-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+      }
+      .mini-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .leaf {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-color: #e74c3c;
+        clip-path: path('M15,0 C15,0 0,15 0,25 C0,35 15,30 15,50 C15,30 30,35 30,25 C30,15 15,0 15,0');
+        animation: fall linear forwards;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image-container">
+      <img id="miniImage" class="mini-image" alt="Mini Car Display" />
+    </div>
+    <script>
+      // ローカルの画像パスを配列で定義
+      const miniImages = [
+        'C:\Users\shiito1\Desktop\Client\001_MINI\999_minidashboard_image\F65.png',
+      ];
 
-    .image-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f0f0f0;
-    }
+      function displayRandomImage() {
+        const img = document.getElementById("miniImage");
+        const randomIndex = Math.floor(Math.random() * miniImages.length);
+        img.src = miniImages[randomIndex];
+      }
 
-    .mini-image {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-  </style>
-</head>
-<body>
-  <div class="image-container">
-    <img id="miniImage" class="mini-image" alt="mini_dashboard_image" />
-  </div>
+      function createLeaf() {
+        const leaf = document.createElement("div");
+        leaf.className = "leaf";
+        leaf.style.left = Math.random() * 100 + "vw";
+        leaf.style.top = "-30px";
+        leaf.style.width = Math.random() * 30 + 20 + "px";
+        leaf.style.height = leaf.style.width;
+        
+        const colors = ['#e74c3c', '#e67e22', '#d35400'];
+        leaf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        leaf.style.animationDuration = Math.random() * 3 + 2 + "s";
+        document.body.appendChild(leaf);
+        
+        setTimeout(() => {
+          leaf.remove();
+        }, 5000);
+      }
 
-  <script>
-    const miniImages = [
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/all-electric-mini-aceman/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1717467375594.jpg",
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/all-electric-mini-countryman/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1716265503279.jpg",
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/mini-countryman1/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1715945356844.jpg",
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/the-new-mini-cooper/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1716263337415.jpg",
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/all-electric-mini-cooper/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1716264037040.jpg",
-      "https://www.mini.jp/ja_JP/home/home-stageteaser/mini-cooper-5-door/jcr:content/main/homestageHelper/stageitem/motion.wide.1920w.j_1718176999794.jpg",
-    ];
+      function startLeafAnimation() {
+        setInterval(createLeaf, 300);
+      }
 
-    function displayRandomImage() {
-      const img = document.getElementById("miniImage");
-      const randomIndex = Math.floor(Math.random() * miniImages.length);
-      img.src = miniImages[randomIndex];
-    }
-
-    window.onload = displayRandomImage;
-  </script>
-</body>
+      window.onload = function () {
+        displayRandomImage();  // 初期表示時に画像を表示
+        setTimeout(startLeafAnimation, 1000);
+      };
+    </script>
+  </body>
 </html>
