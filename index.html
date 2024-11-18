@@ -1,13 +1,9 @@
-Mini Dashboard with Falling Leaves Animation
-Preview
-Code
-
 <!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini Dashboard with Falling Leaves</title>
+    <title>mini_dashboard_image</title>
     <style>
       body,
       html {
@@ -26,6 +22,8 @@ Code
         background-color: #f0f0f0;
       }
       .mini-image {
+        width: 1600px;
+        height: 900px;
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
@@ -34,17 +32,29 @@ Code
         position: absolute;
         width: 30px;
         height: 30px;
-        background-color: #e74c3c;
-        clip-path: path('M15,0 C15,0 0,15 0,25 C0,35 15,30 15,50 C15,30 30,35 30,25 C30,15 15,0 15,0');
+        background-size: cover;
+        background-repeat: no-repeat;
         animation: fall linear forwards;
+      }
+      .audio-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
       }
       @keyframes fall {
         0% {
-          transform: translateY(-100vh) rotate(0deg);
+          transform: translateY(-100vh);
           opacity: 1;
         }
         100% {
-          transform: translateY(100vh) rotate(360deg);
+          transform: translateY(100vh);
           opacity: 1;
         }
       }
@@ -52,13 +62,69 @@ Code
   </head>
   <body>
     <div class="image-container">
-      <img id="miniImage" class="mini-image" alt="Mini Car Display" />
+      <img id="miniImage" class="mini-image" alt="car_image" />
     </div>
+    <div class="audio-controls">
+      <button id="toggleMusic" style="padding: 5px 10px;">音楽 ON/OFF</button>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+    </div>
+    <audio id="bgMusic" loop>
+      <source id="audioSource" type="audio/mp3">
+      お使いのブラウザは音声要素をサポートしていません。
+    </audio>
     <script>
-      // ローカルの画像パスを配列で定義
-      const miniImages = [
-        'https://drive.google.com/file/d/1DqRpm7Qu2AKM1xlH56kwQVTFPZKY_5dL/view?usp=sharing'
+      const leafImages = [
+        "https://wanpug.com/illust354_thumb.gif",
+        "https://wanpug.com/illust350_thumb.gif",
+        "https://free-icons.net/wp-content/uploads/2020/09/nature029.png",
       ];
+      const miniImages = [
+        "https://github.com/Shinito0813/test/blob/main/F65.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/F67.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/J01.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/U25BEV.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/U25ICE.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/J05.png?raw=true",
+        "https://github.com/Shinito0813/test/blob/main/f66.png?raw=true",
+      ];
+
+      // 音楽ファイルのURL（GitHubの音楽ファイルのURLに置き換えてください）
+      const musicUrl = "https://github.com/Shinito0813/test/blob/main/your-music-file.mp3?raw=true";
+
+      function setupAudio() {
+        const audio = document.getElementById('bgMusic');
+        const audioSource = document.getElementById('audioSource');
+        const toggleButton = document.getElementById('toggleMusic');
+        const volumeControl = document.getElementById('volumeControl');
+
+        audioSource.src = musicUrl;
+        audio.load();
+        audio.volume = volumeControl.value;
+
+        toggleButton.addEventListener('click', () => {
+          if (audio.paused) {
+            audio.play();
+            toggleButton.textContent = '音楽 OFF';
+          } else {
+            audio.pause();
+            toggleButton.textContent = '音楽 ON';
+          }
+        });
+
+        volumeControl.addEventListener('input', (e) => {
+          audio.volume = e.target.value;
+        });
+
+        // ブラウザの自動再生ポリシーに対応するため、ユーザーインタラクション後に再生を試みる
+        document.addEventListener('click', () => {
+          if (audio.paused) {
+            audio.play().catch(error => {
+              console.log("自動再生できませんでした:", error);
+            });
+            toggleButton.textContent = '音楽 OFF';
+          }
+        }, { once: true });
+      }
 
       function displayRandomImage() {
         const img = document.getElementById("miniImage");
@@ -69,17 +135,14 @@ Code
       function createLeaf() {
         const leaf = document.createElement("div");
         leaf.className = "leaf";
+        const randomLeafImage = leafImages[Math.floor(Math.random() * leafImages.length)];
+        leaf.style.backgroundImage = `url(${randomLeafImage})`;
         leaf.style.left = Math.random() * 100 + "vw";
         leaf.style.top = "-30px";
         leaf.style.width = Math.random() * 30 + 20 + "px";
         leaf.style.height = leaf.style.width;
-        
-        const colors = ['#e74c3c', '#e67e22', '#d35400'];
-        leaf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        
         leaf.style.animationDuration = Math.random() * 3 + 2 + "s";
         document.body.appendChild(leaf);
-        
         setTimeout(() => {
           leaf.remove();
         }, 5000);
@@ -90,8 +153,9 @@ Code
       }
 
       window.onload = function () {
-        displayRandomImage();  // 初期表示時に画像を表示
-        setTimeout(startLeafAnimation, 1000);
+        displayRandomImage();
+        setupAudio();
+        setTimeout(startLeafAnimation, 3000);
       };
     </script>
   </body>
